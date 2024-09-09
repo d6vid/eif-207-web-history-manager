@@ -10,3 +10,7 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
 endif()
 
 # TODO: Add tests and install targets if needed.
+
+target_link_libraries(eif-207-web-history-manager PRIVATE web_manager)
+
+add_subdirectory ("src")
