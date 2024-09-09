@@ -2,6 +2,7 @@
 
 Tab::Tab(const History& history) 
 	: history(history), currentPage(history.getCurrentPage()) {}
+Tab::~Tab() {}
 bool Tab::goForward() {
 	if (history.moveToRightPage()) {
 		currentPage = history.getCurrentPage();
@@ -29,4 +30,3 @@ std::optional<WebPage> Tab::getCurrentPage() const {
 bool Tab::hasPages() const {
 	return !history.isEmpty();
 }
-Tab::~Tab() {}
