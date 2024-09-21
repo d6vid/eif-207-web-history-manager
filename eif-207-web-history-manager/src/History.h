@@ -13,6 +13,7 @@ public:
 	bool moveToLeftPage();
 	bool moveToRightPage();
 	bool isEmpty() const;
+	void mostrarHistorial() const; //Mostrar el historial de la página 
 	~History();
 private:
 	std::deque<WebPage> visitedPages;

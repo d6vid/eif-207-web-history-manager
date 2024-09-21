@@ -10,6 +10,7 @@ public:
 	bool setCurrentPage(const WebPage& page);
 	std::optional<WebPage> getCurrentPage() const;
 	bool hasPages() const;
+	void mostrarHistorial() const;
 	~Tab();
 private:
 	History history;

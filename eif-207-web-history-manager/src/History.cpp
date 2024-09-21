@@ -34,3 +34,9 @@ bool History::moveToRightPage() {
 bool History::isEmpty() const {
     return visitedPages.empty();
 }
+
+void History::mostrarHistorial() const {
+    for (const auto& pagina : visitedPages) {
+        std::cout << pagina.getUrl() << " - " << pagina.getTitle();
+    }
+}
