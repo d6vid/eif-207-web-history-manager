@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (eif-207-web-history-manager "main.cpp" "main.h")
+add_executable (eif-207-web-history-manager "main.cpp" )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET eif-207-web-history-manager PROPERTY CXX_STANDARD 20)

@@ -1,7 +1,8 @@
-﻿#include "main.h"
-#include "Tab.h"
+﻿#include "Tab.h"
 
 int main()
 {
 	return 0;
 }
+
+

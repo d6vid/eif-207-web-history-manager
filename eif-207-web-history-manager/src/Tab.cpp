@@ -30,3 +30,7 @@ std::optional<WebPage> Tab::getCurrentPage() const {
 bool Tab::hasPages() const {
 	return !history.isEmpty();
 }
+
+void Tab::mostrarHistorial() const {
+	history.mostrarHistorial();
+}
