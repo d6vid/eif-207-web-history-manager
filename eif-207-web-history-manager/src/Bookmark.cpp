@@ -1,27 +1,17 @@
-#include "BookmarkSystem.h"
+#include "Bookmark.h"
 
-BookmarkSystem::BookmarkSystem() {
+Bookmark::Bookmark(const WebPage& page, const std::vector<std::string>& tags) 
+	: page(page), tags(tags) {}
+Bookmark Bookmark::create(const WebPage& page, const std::vector<std::string>& tags) {
+	return Bookmark(page, tags);
 }
-void BookmarkSystem::addBookmark(const WebPage& page) {
-    if (!isBookmarked(page.getUrl())) {
-        bookmarks.push_back(page);
-    }
+const WebPage& Bookmark::getPage() const {
+	return page;
 }
-void BookmarkSystem::removeBookmark(const std::string& url) {
-    bookmarks.erase(
-        std::remove_if(bookmarks.begin(), bookmarks.end(),
-            [&url](const WebPage& page) { return page.getUrl() == url; }),
-        bookmarks.end()
-    );
+const std::vector<std::string>& Bookmark::getTags() const {
+	return tags;
 }
-bool BookmarkSystem::isBookmarked(const std::string& url) const {
-    for (const auto& page : bookmarks) {
-        if (page.getUrl() == url) {
-            return true;
-        }
-    }
-    return false;
+const bool Bookmark::hasTag(const std::string& tag) const {
+	return std::find(tags.begin(), tags.end(), tag) != tags.end();
 }
-std::vector<WebPage> BookmarkSystem::getBookmarks() const {
-    return bookmarks;
-}
+Bookmark::~Bookmark() {}

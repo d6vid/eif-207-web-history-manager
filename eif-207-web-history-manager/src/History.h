@@ -7,15 +7,16 @@
 
 class History {
 public:
-	History(const std::deque<WebPage>& visitedPages = {}, int currentIndex = -1);
+	static History create(const std::deque<WebPage>& visitedPages = {}, std::optional<size_t> currentIndex = std::nullopt);
 	bool addPage(const WebPage& webPage);
-	std::optional<WebPage> getCurrentPage() const;
+	const std::optional<WebPage> getCurrentPage() const;
+	const std::deque<WebPage>& getVisitedPages() const;
 	bool moveToLeftPage();
 	bool moveToRightPage();
 	bool isEmpty() const;
-	void mostrarHistorial() const; //Mostrar el historial de la página 
 	~History();
 private:
+	History(const std::deque<WebPage>& visitedPages = {}, std::optional<size_t> currentIndex = std::nullopt);
 	std::deque<WebPage> visitedPages;
-	int currentIndex;
+	std::optional<size_t> currentIndex;
 };

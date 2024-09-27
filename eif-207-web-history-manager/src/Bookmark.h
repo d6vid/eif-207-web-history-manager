@@ -3,16 +3,15 @@
 #include <vector>
 #include "WebPage.h"
 
-class BookmarkSystem {
+class Bookmark {
 public:
-    BookmarkSystem();
-    void addBookmark(const WebPage& page);
-    void removeBookmark(const std::string& url);
-    bool isBookmarked(const std::string& url) const;
-    std::vector<WebPage> getBookmarks() const;
-
+    static Bookmark create(const WebPage& page, const std::vector<std::string>& tags);
+    const WebPage& getPage() const;
+    const std::vector<std::string>& getTags() const;
+    const bool hasTag(const std::string& tag) const;
+    ~Bookmark();
 private:
-    std::vector<WebPage> bookmarks; 
+    Bookmark(const WebPage& page, const std::vector<std::string>& tags);
+    WebPage page;
+    std::vector<std::string> tags;
 };
-
-

@@ -1,8 +1,11 @@
 add_library(web_manager STATIC
     WebPage.cpp
+    Bookmark.cpp
+    BookmarkManager.cpp
     History.cpp
     Tab.cpp
-    Navegador.cpp
- "History.cpp" "History.h")
+    TabManager.cpp
+    Browser.cpp
+)
 
 target_include_directories(web_manager PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
