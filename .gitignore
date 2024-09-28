@@ -361,8 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/CMakeFiles
-/eif-207-web-history-manager/src/gui/cmake_install.cmake
-*.cmake
-*.ninja
-*.txt
