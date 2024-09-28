@@ -44,3 +44,10 @@ bool History::isEmpty() const {
 const std::deque<WebPage>& History::getVisitedPages() const {
     return visitedPages;
 }
+std::vector<std::string> History::toStringVector() const {
+    std::vector<std::string> result;
+    for (const auto& webPage : visitedPages) {
+        result.push_back(webPage.getUrl()); 
+    }
+    return result;
+}

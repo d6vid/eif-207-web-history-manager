@@ -13,6 +13,7 @@ public:
 	const bool moveToLeftTab();
 	const bool moveToRightTab();
 	const bool moveToTabByIndex(const size_t index);
+	std::vector<Tab> getTabs() const;
 	~TabManager();
 private:
 	TabManager(const std::vector<Tab>& tabs = {}, const std::optional<size_t> currentTab = std::nullopt);

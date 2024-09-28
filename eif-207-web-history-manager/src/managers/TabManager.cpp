@@ -47,4 +47,7 @@ const bool TabManager::moveToTabByIndex(const size_t index) {
 	}
 	return false;
 }
+std::vector<Tab> TabManager::getTabs() const {
+	return tabs;
+}
 TabManager::~TabManager() {}
