@@ -1,6 +1,6 @@
 #include "SearchManager.h"
 
-SearchManager::SearchManager(const std::vector<WebPage>& pages = {}) 
+SearchManager::SearchManager(const std::vector<WebPage>& pages) 
 	: pages(pages) {}
 SearchManager::~SearchManager() {}
 SearchManager SearchManager::create(const std::vector<WebPage>& pages) {

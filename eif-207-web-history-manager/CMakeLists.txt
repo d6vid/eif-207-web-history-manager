@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (eif-207-web-history-manager "main.cpp" )
+add_executable (eif-207-web-history-manager "main.cpp" "src/serializers/WebPageSerializer.h" "src/serializers/WebPageSerializer.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET eif-207-web-history-manager PROPERTY CXX_STANDARD 20)
@@ -11,6 +11,6 @@ endif()
 
 # TODO: Add tests and install targets if needed.
 
-target_link_libraries(eif-207-web-history-manager PRIVATE model managers)
+target_link_libraries(eif-207-web-history-manager PRIVATE model managers serializers)
 
 add_subdirectory ("src")
