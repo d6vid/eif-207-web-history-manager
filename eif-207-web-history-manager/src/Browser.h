@@ -16,7 +16,7 @@ public:
 	const bool searchPage(const std::string& url);
 	
 	// 3. Tab Management
-	const bool openTab();
+	const void openTab();
 	const bool closeCurrentTab();
 	const bool closeTabByIndex(const size_t index);
 	const bool moveToLeftTab();

@@ -4,6 +4,7 @@
 #include <optional>
 #include <stdexcept>
 #include "WebPage.h"
+#include <vector>
 
 class History {
 public:
@@ -14,6 +15,7 @@ public:
 	bool moveToLeftPage();
 	bool moveToRightPage();
 	bool isEmpty() const;
+	std::vector<std::string> toStringVector() const;
 	~History();
 private:
 	History(const std::deque<WebPage>& visitedPages = {}, std::optional<size_t> currentIndex = std::nullopt);
