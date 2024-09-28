@@ -1,12 +1,11 @@
-add_library(web_manager STATIC
-    WebPage.cpp
-    Bookmark.cpp
-    BookmarkManager.cpp
-    History.cpp
-    Tab.cpp
-    TabManager.cpp
-    SearchManager.cpp
-    Browser.cpp
- "SearchManager.h" "SearchManager.cpp")
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/model
+    ${CMAKE_CURRENT_SOURCE_DIR}/serializers
+    ${CMAKE_CURRENT_SOURCE_DIR}/managers
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui
+)
 
-target_include_directories(web_manager PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(model)
+add_subdirectory(serializers)
+add_subdirectory(managers)
+add_subdirectory(gui)
