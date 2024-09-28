@@ -5,7 +5,6 @@ add_library(web_manager STATIC
     History.cpp
     Tab.cpp
     TabManager.cpp
-    SearchManager.cpp
     Browser.cpp
  "SearchManager.h" "SearchManager.cpp")
 

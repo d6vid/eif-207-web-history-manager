@@ -2,6 +2,7 @@
 
 #include "BookmarkManager.h"
 #include "TabManager.h"
+#include "SearchManager.h"
 
 class Browser {
 public:
