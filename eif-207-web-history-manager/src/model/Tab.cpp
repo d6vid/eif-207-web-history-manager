@@ -1,8 +1,11 @@
 #include "Tab.h"
 
-Tab::Tab(const History& history) 
-	: history(history), currentPage(history.getCurrentPage()) {}
+Tab::Tab(const History& history, const std::optional<WebPage>& currentPage) 
+	: history(history), currentPage(currentPage) {}
 Tab::~Tab() {}
+Tab Tab::create(const History& history) {
+	return Tab(history, history.getCurrentPage());
+}
 bool Tab::goForward() {
 	if (history.moveToRightPage()) {
 		currentPage = history.getCurrentPage();
@@ -19,7 +22,7 @@ bool Tab::goBackward() {
 }
 bool Tab::setCurrentPage(const WebPage& page) {
 	if (history.addPage(page)) {
-		currentPage = history.getCurrentPage();
+		currentPage = std::make_optional<WebPage>(page);
 		return true;
 	}
 	return false;
@@ -31,6 +34,6 @@ bool Tab::hasPages() const {
 	return !history.isEmpty();
 }
 
-void Tab::mostrarHistorial() const {
-	history.mostrarHistorial();
+const History& Tab::getHistory() const {
+	return history;
 }
