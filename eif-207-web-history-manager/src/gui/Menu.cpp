@@ -4,7 +4,7 @@ Menu::Menu(Browser& browser) : browser(browser){}
 
 void Menu::showMenu() {
     std::cout << "╔═══════════════════════════════════════════════════╗" << std::endl;
-    std::cout << "        Administrador historial de navegacion " << std::endl;
+    std::cout << "          Historial de navegacion web " << std::endl;
     std::cout << "╚═══════════════════════════════════════════════════╝" << std::endl;
     std::cout << "  [1]  Visitar un sitio web" << std::endl;
     std::cout << "  [2]  Agregar marcador" << std::endl;
@@ -20,7 +20,7 @@ void Menu::showMenu() {
         std::cout << "\n\nSitio actual: " << currentPage->getUrl() << " - " << currentPage->getTitle() << std::endl;
     }
     else {
-        std::cout << "\n\nNo hay sitio actual." << std::endl;
+        std::cout << "\n\nNo hay sitio actual" << std::endl;
     }
 }
 
@@ -41,7 +41,7 @@ void Menu::handleOption(int option) {
         break;
     case 5:
         browser.switchPrivateSearch();
-        std::cout << "Modo de navegación privada activado/desactivado." << std::endl;
+        std::cout << "Modo de navegación privada activado/desactivado" << std::endl;
         break;
     case 6:
         importExport();
@@ -60,34 +60,34 @@ void Menu::handleOption(int option) {
     while (true) {
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             if (browser.moveToLeftPage()) {
-                std::cout << "Navegando a la página anterior." << std::endl;
+                std::cout << "Navegando a la página anterior" << std::endl;
             }
             else {
-                std::cout << "No hay páginas anteriores." << std::endl;
+                std::cout << "No hay páginas anteriores" << std::endl;
             }
         }
         else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
             if (browser.moveToRightPage()) {
-                std::cout << "Navegando a la página siguiente." << std::endl;
+                std::cout << "Navegando a la página siguiente" << std::endl;
             }
             else {
-                std::cout << "No hay páginas siguientes." << std::endl;
+                std::cout << "No hay páginas siguientes " << std::endl;
             }
         }
         else if (GetAsyncKeyState(VK_UP) & 0x8000) {
             if (browser.moveToLeftTab()) {
-                std::cout << "Cambiando a la pestaña anterior." << std::endl;
+                std::cout << "Cambiando a la pestaña anterior" << std::endl;
             }
             else {
-                std::cout << "No hay pestañas anteriores." << std::endl;
+                std::cout << "No hay pestañas anteriores" << std::endl;
             }
         }
         else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             if (browser.moveToRightTab()) {
-                std::cout << "Cambiando a la pestaña siguiente." << std::endl;
+                std::cout << "Cambiando a la pestaña siguiente" << std::endl;
             }
             else {
-                std::cout << "No hay pestañas siguientes." << std::endl;
+                std::cout << "No hay pestañas siguientes" << std::endl;
             }
         }
         Sleep(100); 
