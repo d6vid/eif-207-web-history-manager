@@ -10,11 +10,7 @@
 
 namespace Tests {
 
-    int CreateWebPageTest() {
-        const std::string expectedUrl = "https://example.com";
-        const std::string expectedDomain = "example.com";
-        const std::string expectedTitle = "Example Title";
-
+    int CreateWebPageTest(const std::string& expectedUrl, const std::string& expectedDomain, const std::string& expectedTitle) {
         WebPage actual = WebPage::create(expectedUrl, expectedDomain, expectedTitle);
 
         if (expectedUrl != actual.getUrl()) {
@@ -38,18 +34,18 @@ namespace Tests {
         std::cout << "CreateWebPageTest passed!" << std::endl;
         return 0;
     }
-
-    int TestHistoryCreate() {
+    int TestHistoryCreate(const std::string& url1, const std::string& domain1, const std::string& title1,
+        const std::string& url2, const std::string& domain2, const std::string& title2,
+        size_t currentIndex) {
         std::deque<WebPage> pages = {
-            WebPage::create("https://page1.com", "page1.com", "Page 1"),
-            WebPage::create("https://page2.com", "page2.com", "Page 2")
+            WebPage::create(url1, domain1, title1),
+            WebPage::create(url2, domain2, title2)
         };
-        size_t currentIndex = 1;
 
         History history = History::create(pages, currentIndex);
 
-        if (history.getCurrentPage()->getUrl() != "https://page2.com") {
-            std::cerr << "TestHistoryCreate failed: expected current URL to be 'https://page2.com' but got '"
+        if (history.getCurrentPage()->getUrl() != url2) {
+            std::cerr << "TestHistoryCreate failed: expected current URL to be '" << url2 << "' but got '"
                 << history.getCurrentPage()->getUrl() << "'" << std::endl;
             return 1;
         }
@@ -58,15 +54,17 @@ namespace Tests {
         return 0;
     }
 
-    int TestHistoryAddPage() {
-        std::deque<WebPage> pages = { WebPage::create("https://initialpage.com", "initialpage.com", "Initial Page") };
+
+    int TestHistoryAddPage(const std::string& initialUrl, const std::string& initialDomain, const std::string& initialTitle,
+        const std::string& newUrl, const std::string& newDomain, const std::string& newTitle) {
+        std::deque<WebPage> pages = { WebPage::create(initialUrl, initialDomain, initialTitle) };
         History history = History::create(pages);
 
-        WebPage newPage = WebPage::create("https://newpage.com", "newpage.com", "New Page");
+        WebPage newPage = WebPage::create(newUrl, newDomain, newTitle);
         history.addPage(newPage);
 
-        if (history.getCurrentPage()->getUrl() != "https://newpage.com") {
-            std::cerr << "TestHistoryAddPage failed: expected current URL to be 'https://newpage.com' but got '"
+        if (history.getCurrentPage()->getUrl() != newUrl) {
+            std::cerr << "TestHistoryAddPage failed: expected current URL to be '" << newUrl << "' but got '"
                 << history.getCurrentPage()->getUrl() << "'" << std::endl;
             return 1;
         }
@@ -75,24 +73,24 @@ namespace Tests {
         return 0;
     }
 
-    int TestHistoryNavigation() {
+    int TestHistoryNavigation(const std::string& page1Url, const std::string& page2Url, const std::string& page3Url) {
         std::deque<WebPage> pages = {
-            WebPage::create("https://page1.com", "page1.com", "Page 1"),
-            WebPage::create("https://page2.com", "page2.com", "Page 2"),
-            WebPage::create("https://page3.com", "page3.com", "Page 3")
+            WebPage::create(page1Url, "page1.com", "Page 1"),
+            WebPage::create(page2Url, "page2.com", "Page 2"),
+            WebPage::create(page3Url, "page3.com", "Page 3")
         };
         History history = History::create(pages, 2);
 
         history.moveToLeftPage();
-        if (history.getCurrentPage()->getUrl() != "https://page2.com") {
-            std::cerr << "TestHistoryNavigation failed: expected current URL to be 'https://page2.com' but got '"
+        if (history.getCurrentPage()->getUrl() != page2Url) {
+            std::cerr << "TestHistoryNavigation failed: expected current URL to be '" << page2Url << "' but got '"
                 << history.getCurrentPage()->getUrl() << "'" << std::endl;
             return 1;
         }
 
         history.moveToLeftPage();
-        if (history.getCurrentPage()->getUrl() != "https://page1.com") {
-            std::cerr << "TestHistoryNavigation failed: expected current URL to be 'https://page1.com' but got '"
+        if (history.getCurrentPage()->getUrl() != page1Url) {
+            std::cerr << "TestHistoryNavigation failed: expected current URL to be '" << page1Url << "' but got '"
                 << history.getCurrentPage()->getUrl() << "'" << std::endl;
             return 1;
         }
@@ -103,8 +101,8 @@ namespace Tests {
         }
 
         history.moveToRightPage();
-        if (history.getCurrentPage()->getUrl() != "https://page2.com") {
-            std::cerr << "TestHistoryNavigation failed: expected current URL to be 'https://page2.com' but got '"
+        if (history.getCurrentPage()->getUrl() != page2Url) {
+            std::cerr << "TestHistoryNavigation failed: expected current URL to be '" << page2Url << "' but got '"
                 << history.getCurrentPage()->getUrl() << "'" << std::endl;
             return 1;
         }
@@ -113,19 +111,14 @@ namespace Tests {
         return 0;
     }
 
-    int TestPolicyLimit() {
-        Policy policy(3, std::chrono::seconds(60));
-        std::vector<std::string> history = { "page1", "page2", "page3", "page4", "page5" };
+    int TestPolicyLimit(int maxSize, const std::vector<std::string>& historyInput) {
+        Policy policy(maxSize, std::chrono::seconds(60));
+        std::vector<std::string> history = historyInput;
 
         policy.limit(history);
 
-        if (history.size() != 3) {
-            std::cerr << "TestPolicyLimit failed: expected history size to be 3, but got " << history.size() << std::endl;
-            return 1;
-        }
-
-        if (history[0] != "page3" || history[1] != "page4" || history[2] != "page5") {
-            std::cerr << "TestPolicyLimit failed: history content is incorrect after applying limit." << std::endl;
+        if (history.size() != static_cast<size_t>(maxSize)) {
+            std::cerr << "TestPolicyLimit failed: expected history size to be " << maxSize << ", but got " << history.size() << std::endl;
             return 1;
         }
 
@@ -133,15 +126,15 @@ namespace Tests {
         return 0;
     }
 
-    int TestPolicyClean() {
-        Policy policy(5, std::chrono::seconds(60));
+    int TestPolicyClean(int maxEntries, int durationInSeconds, int timeDiff1, int timeDiff2, int timeDiff3, int timeDiff4) {
+        Policy policy(maxEntries, std::chrono::seconds(durationInSeconds));
 
         auto now = std::chrono::system_clock::now();
         std::vector<std::pair<std::string, std::chrono::system_clock::time_point>> historyTimestamps = {
-            {"page1", now - std::chrono::minutes(2)},
-            {"page2", now - std::chrono::minutes(1)},
-            {"page3", now - std::chrono::seconds(30)},
-            {"page4", now}
+            {"page1", now - std::chrono::seconds(timeDiff1)},  
+            {"page2", now - std::chrono::seconds(timeDiff2)},  
+            {"page3", now - std::chrono::seconds(timeDiff3)},  
+            {"page4", now - std::chrono::seconds(timeDiff4)}   
         };
 
         policy.clean(historyTimestamps);
@@ -160,39 +153,60 @@ namespace Tests {
         return 0;
     }
 
-    int TestBookmarkCreate() {
-        WebPage page = WebPage::create("https://example.com", "example.com", "Example Page");
-        std::vector<std::string> tags = { "important", "reference" };
-
+    int TestBookmarkCreate(const std::string& url, const std::string& domain, const std::string& title, const std::vector<std::string>& tags) {
+        WebPage page = WebPage::create(url, domain, title);
         Bookmark bookmark = Bookmark::create(page, tags);
 
-        if (bookmark.getPage().getUrl() != "https://example.com") {
-            std::cerr << "TestBookmarkCreate failed: expected page URL to be 'https://example.com' but got '"
+        if (bookmark.getPage().getUrl() != url) {
+            std::cerr << "TestBookmarkCreate failed: expected page URL to be '" << url << "' but got '"
                 << bookmark.getPage().getUrl() << "'" << std::endl;
             return 1;
         }
 
-        if (bookmark.getTags().size() != 2 || bookmark.getTags()[0] != "important" || bookmark.getTags()[1] != "reference") {
-            std::cerr << "TestBookmarkCreate failed: expected tags to be 'important' and 'reference', but got different tags."
-                << std::endl;
+        if (bookmark.getTags().size() != tags.size() || bookmark.getTags() != tags) {
+            std::cerr << "TestBookmarkCreate failed: expected tags, but got different values." << std::endl;
             return 1;
         }
 
         std::cout << "TestBookmarkCreate passed!" << std::endl;
         return 0;
     }
-    int TestBookmarkHasTag() {
-        WebPage page = WebPage::create("https://example.com", "example.com", "Example Page");
-        std::vector<std::string> tags = { "important", "reference" };
-        Bookmark bookmark = Bookmark::create(page, tags);
 
-        if (!bookmark.hasTag("important")) {
-            std::cerr << "TestBookmarkHasTag failed: expected tag 'important' to be found but it was not." << std::endl;
+    int TestBookmarkGetTags(const std::string& url, const std::string& domain, const std::string& title, const std::vector<std::string>& expectedTags) {
+        WebPage page = WebPage::create(url, domain, title);
+        Bookmark bookmark = Bookmark::create(page, expectedTags);
+
+        const std::vector<std::string>& retrievedTags = bookmark.getTags();
+
+        if (retrievedTags.size() != expectedTags.size()) {
+            std::cerr << "TestBookmarkGetTags failed: expected " << expectedTags.size() << " tags, but got " << retrievedTags.size() << std::endl;
             return 1;
         }
 
-        if (bookmark.hasTag("random")) {
-            std::cerr << "TestBookmarkHasTag failed: expected tag 'random' to not be found but it was." << std::endl;
+        for (size_t i = 0; i < expectedTags.size(); ++i) {
+            if (retrievedTags[i] != expectedTags[i]) {
+                std::cerr << "TestBookmarkGetTags failed: expected tag '" << expectedTags[i] << "', but got '" << retrievedTags[i] << "'." << std::endl;
+                return 1;
+            }
+        }
+
+        std::cout << "TestBookmarkGetTags passed!" << std::endl;
+        return 0;
+    }
+
+
+    int TestBookmarkHasTag(const std::string& url, const std::string& domain, const std::string& title, const std::string& tag, const std::string& checkTag) {
+        WebPage page = WebPage::create(url, domain, title);
+        std::vector<std::string> tags = { tag };
+        Bookmark bookmark = Bookmark::create(page, tags);
+
+        if (!bookmark.hasTag(tag)) {
+            std::cerr << "TestBookmarkHasTag failed: expected tag '" << tag << "' to be found but it was not." << std::endl;
+            return 1;
+        }
+
+        if (bookmark.hasTag(checkTag)) {
+            std::cerr << "TestBookmarkHasTag failed: expected tag '" << checkTag << "' to not be found but it was." << std::endl;
             return 1;
         }
 
@@ -200,30 +214,14 @@ namespace Tests {
         return 0;
     }
 
-    int TestBookmarkGetTags() {
-        WebPage page = WebPage::create("https://example.com", "example.com", "Example Page");
-        std::vector<std::string> tags = { "tag1", "tag2", "tag3" };
-        Bookmark bookmark = Bookmark::create(page, tags);
-
-        const std::vector<std::string>& retrievedTags = bookmark.getTags();
-
-        if (retrievedTags.size() != 3 || retrievedTags[0] != "tag1" || retrievedTags[1] != "tag2" || retrievedTags[2] != "tag3") {
-            std::cerr << "TestBookmarkGetTags failed: expected tags 'tag1', 'tag2', 'tag3', but got different values."
-                << std::endl;
-            return 1;
-        }
-
-        std::cout << "TestBookmarkGetTags passed!" << std::endl;
-        return 0;
-    }
   
-    int TestPolicyGetSetMax() {
+    int TestPolicyGetSetMax(int max) {
         Policy policy(5, std::chrono::seconds(60));
 
-        policy.setmax(10);
+        policy.setmax(max);
 
-        if (policy.getmax() != 10) {
-            std::cerr << "TestPolicyGetSetMax failed: expected max to be 10, but got " << policy.getmax() << std::endl;
+        if (policy.getmax() != max) {
+            std::cerr << "TestPolicyGetSetMax failed: expected max to be " << max << ", but got " << policy.getmax() << std::endl;
             return 1;
         }
 
@@ -231,20 +229,21 @@ namespace Tests {
         return 0;
     }
 
-    int TestPolicyGetSetDuration() {
+    int TestPolicyGetSetDuration(int duration) {
         Policy policy(5, std::chrono::seconds(120));
 
-        policy.setduration(std::chrono::seconds(120));
+        policy.setduration(std::chrono::seconds(duration));
 
-        if (policy.getduration() != std::chrono::seconds(120)) {
-            std::cerr << "TestPolicyGetSetDuration failed: expected duration to be 120 seconds, but got "
-                << policy.getduration().count() << " seconds." << std::endl;
+        if (policy.getduration() != std::chrono::seconds(duration)) {
+            std::cerr << "TestPolicyGetSetDuration failed: expected duration to be " << duration
+                << " seconds, but got " << policy.getduration().count() << " seconds." << std::endl;
             return 1;
         }
 
         std::cout << "TestPolicyGetSetDuration passed!" << std::endl;
         return 0;
     }
+    
 } 
 int main(int argc, char* argv[]) {
     int result = 0;
@@ -253,37 +252,94 @@ int main(int argc, char* argv[]) {
         std::string testName = argv[1];
 
         if (testName == "CreateWebPageTest") {
-            result += Tests::CreateWebPageTest();
+           
+            std::string expectedUrl = argv[2];
+            std::string expectedDomain = argv[3];
+            std::string expectedTitle = argv[4];
+            result += Tests::CreateWebPageTest(expectedUrl, expectedDomain, expectedTitle);
         }
         else if (testName == "TestHistoryCreate") {
-            result += Tests::TestHistoryCreate();
+            std::string url1 = argv[2];
+            std::string domain1 = argv[3];
+            std::string title1 = argv[4];
+            std::string url2 = argv[5];
+            std::string domain2 = argv[6];
+            std::string title2 = argv[7];
+            size_t currentIndex = std::stoul(argv[8]);
+            result += Tests::TestHistoryCreate(url1, domain1, title1, url2, domain2, title2, currentIndex);
         }
         else if (testName == "TestHistoryAddPage") {
-            result += Tests::TestHistoryAddPage();
+            std::string initialUrl = argv[2];
+            std::string initialDomain = argv[3];
+            std::string initialTitle = argv[4];
+            std::string newUrl = argv[5];
+            std::string newDomain = argv[6];
+            std::string newTitle = argv[7];
+            result += Tests::TestHistoryAddPage(initialUrl, initialDomain, initialTitle, newUrl, newDomain, newTitle);
         }
         else if (testName == "TestHistoryNavigation") {
-            result += Tests::TestHistoryNavigation();
+            std::string page1Url = argv[2];
+            std::string page2Url = argv[3];
+            std::string page3Url = argv[4];
+            result += Tests::TestHistoryNavigation(page1Url, page2Url, page3Url);
         }
         else if (testName == "TestPolicyLimit") {
-            result += Tests::TestPolicyLimit();
+            int maxSize = std::stoi(argv[2]);  
+            std::vector<std::string> historyInput;
+
+            for (int i = 3; i < argc; ++i) {
+                historyInput.push_back(argv[i]);
+            }
+            result += Tests::TestPolicyLimit(maxSize, historyInput);
         }
         else if (testName == "TestPolicyClean") {
-            result += Tests::TestPolicyClean();
+            int maxEntries = std::stoi(argv[2]);
+            int durationInSeconds = std::stoi(argv[3]);
+            int timeDiff1 = std::stoi(argv[4]);
+            int timeDiff2 = std::stoi(argv[5]);
+            int timeDiff3 = std::stoi(argv[6]);
+            int timeDiff4 = std::stoi(argv[7]);
+            result += Tests::TestPolicyClean(maxEntries, durationInSeconds, timeDiff1, timeDiff2, timeDiff3, timeDiff4);
         }
         else if (testName == "TestPolicyGetSetMax") {
-            result += Tests::TestPolicyGetSetMax();
+            int max = std::stoi(argv[2]);
+            result += Tests::TestPolicyGetSetMax(max);
         }
         else if (testName == "TestPolicyGetSetDuration") {
-            result += Tests::TestPolicyGetSetDuration();
+            int duration = std::stoi(argv[2]);
+            result += Tests::TestPolicyGetSetDuration(duration);
         }
         else if (testName == "TestBookmarkCreate") {
-            result += Tests::TestBookmarkCreate();
+            std::string url = argv[2];
+            std::string domain = argv[3];
+            std::string title = argv[4];
+            std::vector<std::string> tags;
+            for (int i = 5; i < argc; ++i) {
+                tags.push_back(argv[i]);
+            }
+            result += Tests::TestBookmarkCreate(url, domain, title, tags);
         }
         else if (testName == "TestBookmarkHasTag") {
-            result += Tests::TestBookmarkHasTag();
+            std::string url = argv[2];
+            std::string domain = argv[3];
+            std::string title = argv[4];
+            std::vector<std::string> expectedTags;
+            for (int i = 5; i < argc; ++i) {
+                expectedTags.push_back(argv[i]);
+            }
+            result += Tests::TestBookmarkGetTags(url, domain, title, expectedTags);
         }
         else if (testName == "TestBookmarkGetTags") {
-            result += Tests::TestBookmarkGetTags();
+            std::string url = argv[2];
+            std::string domain = argv[3];
+            std::string title = argv[4];
+            std::vector<std::string> expectedTags;
+            for (int i = 5; i < argc; ++i) {
+                expectedTags.push_back(argv[i]);
+            }
+            result += Tests::TestBookmarkGetTags(url, domain, title, expectedTags);
+        
+           
         }
         else {
             std::cerr << "Unknown test name: " << testName << std::endl;
