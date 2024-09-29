@@ -44,3 +44,27 @@ bool History::isEmpty() const {
 const std::deque<WebPage>& History::getVisitedPages() const {
     return visitedPages;
 }
+
+bool History::serialize(std::ofstream& out) {
+    size_t count = visitedPages.size();
+    out.write(reinterpret_cast<char*>(&count), sizeof(count));
+    for (auto& page : visitedPages) {
+        if (!page.serialize(out)) {
+            return false;  
+        }
+    }
+    out.write(reinterpret_cast<char*>(&currentIndex), sizeof(currentIndex));
+    return out.good();
+}
+bool History::deserialize(std::ifstream& in) {
+    size_t count;
+    in.read(reinterpret_cast<char*>(&count), sizeof(count));
+    visitedPages.resize(count);
+    for (auto& page : visitedPages) {
+        if (!page.deserialize(in)) {
+            return false;  
+        }
+    }
+    in.read(reinterpret_cast<char*>(&currentIndex), sizeof(currentIndex));
+    return in.good();
+}

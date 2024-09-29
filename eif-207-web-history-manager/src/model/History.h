@@ -4,8 +4,9 @@
 #include <optional>
 #include <stdexcept>
 #include "WebPage.h"
+#include "Serializable.h"
 
-class History {
+class History : public Serializable {
 public:
 	static History create(const std::deque<WebPage>& visitedPages = {}, std::optional<size_t> currentIndex = std::nullopt);
 	bool addPage(const WebPage& webPage);
@@ -14,6 +15,8 @@ public:
 	bool moveToLeftPage();
 	bool moveToRightPage();
 	bool isEmpty() const;
+	bool serialize(std::ofstream& out);
+	bool deserialize(std::ifstream& in);
 	~History();
 private:
 	History(const std::deque<WebPage>& visitedPages = {}, std::optional<size_t> currentIndex = std::nullopt);

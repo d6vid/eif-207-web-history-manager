@@ -2,15 +2,17 @@
 
 #include "History.h"
 
-class Tab {
+class Tab : public Serializable {
 public:
 	static Tab create(const History& history = History::create());
 	bool goForward();
 	bool goBackward();
-	bool setCurrentPage(const WebPage& page);
+	bool setCurrentPage(const WebPage& page, const bool track);
 	std::optional<WebPage> getCurrentPage() const;
 	bool hasPages() const;
 	const History& getHistory() const;
+	virtual bool serialize(std::ofstream& out);
+	virtual bool deserialize(std::ifstream& in);
 	~Tab();
 private:
 	Tab(const History& history = History::create(), const std::optional<WebPage>& currentPage = std::nullopt);

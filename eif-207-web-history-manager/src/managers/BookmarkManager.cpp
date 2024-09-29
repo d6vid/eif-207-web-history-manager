@@ -19,8 +19,8 @@ const bool BookmarkManager::removeBookmark(const int index) {
 const std::vector<Bookmark>& BookmarkManager::getBookmarks() const {
 	return bookmarks;
 }
-const std::vector<Bookmark> BookmarkManager::getBookmarksByTag(const std::string& tag) const {
-	std::vector<Bookmark> result = {};
+std::vector<Bookmark> BookmarkManager::getBookmarksByTag(const std::string& tag) {
+	std::vector<Bookmark> result;
 	for (const auto& bookmark : bookmarks) {
 		if (bookmark.hasTag(tag)) {
 			result.push_back(bookmark);
