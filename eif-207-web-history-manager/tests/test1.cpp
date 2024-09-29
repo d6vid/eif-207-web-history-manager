@@ -246,19 +246,54 @@ namespace Tests {
         return 0;
     }
 } 
-int main() {
+int main(int argc, char* argv[]) {
     int result = 0;
 
-    result += Tests::CreateWebPageTest();
-    result += Tests::TestHistoryCreate();
-    result += Tests::TestHistoryAddPage();
-    result += Tests::TestHistoryNavigation();
-    result += Tests::TestPolicyLimit();
-    result += Tests::TestPolicyClean();
-    result += Tests::TestPolicyGetSetMax();
-    result += Tests::TestPolicyGetSetDuration();
-    result += Tests::TestBookmarkCreate();
-    result += Tests::TestBookmarkHasTag();
-    result += Tests::TestBookmarkGetTags();
+    if (argc > 1) {
+        std::string testName = argv[1];
+
+        if (testName == "CreateWebPageTest") {
+            result += Tests::CreateWebPageTest();
+        }
+        else if (testName == "TestHistoryCreate") {
+            result += Tests::TestHistoryCreate();
+        }
+        else if (testName == "TestHistoryAddPage") {
+            result += Tests::TestHistoryAddPage();
+        }
+        else if (testName == "TestHistoryNavigation") {
+            result += Tests::TestHistoryNavigation();
+        }
+        else if (testName == "TestPolicyLimit") {
+            result += Tests::TestPolicyLimit();
+        }
+        else if (testName == "TestPolicyClean") {
+            result += Tests::TestPolicyClean();
+        }
+        else if (testName == "TestPolicyGetSetMax") {
+            result += Tests::TestPolicyGetSetMax();
+        }
+        else if (testName == "TestPolicyGetSetDuration") {
+            result += Tests::TestPolicyGetSetDuration();
+        }
+        else if (testName == "TestBookmarkCreate") {
+            result += Tests::TestBookmarkCreate();
+        }
+        else if (testName == "TestBookmarkHasTag") {
+            result += Tests::TestBookmarkHasTag();
+        }
+        else if (testName == "TestBookmarkGetTags") {
+            result += Tests::TestBookmarkGetTags();
+        }
+        else {
+            std::cerr << "Unknown test name: " << testName << std::endl;
+            return 1;
+        }
+    }
+    else {
+        std::cerr << "No test name provided!" << std::endl;
+        return 1;
+    }
+
     return result;
 }
