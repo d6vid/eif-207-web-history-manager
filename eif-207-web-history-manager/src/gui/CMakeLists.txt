@@ -6,6 +6,7 @@ add_library(web_manager STATIC
     Tab.cpp
     TabManager.cpp
     Browser.cpp
+    Menu.cpp
  "SearchManager.h" "SearchManager.cpp")
 
 target_include_directories(web_manager PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
