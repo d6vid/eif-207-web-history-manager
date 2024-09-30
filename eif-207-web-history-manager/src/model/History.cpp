@@ -37,11 +37,19 @@ bool History::moveToRightPage() {
     }
     return false;
 }
+bool History::removePages(size_t max) {
+    if (visitedPages.size() > max) {
+        visitedPages.erase(visitedPages.begin(), visitedPages.end()-max);
+        return true;
+    }
+    return false;
+}
 bool History::isEmpty() const {
     return visitedPages.empty();
 }
-bool History::applyPolicies() {
-    Policy policies = Policy(2, std::chrono::seconds(259200));
+bool History::applyPolicy(Policies policies) {
+    visitedPages = policies.limit(visitedPages);
+    return true;
 }
 const std::deque<WebPage>& History::getVisitedPages() const {
     return visitedPages;

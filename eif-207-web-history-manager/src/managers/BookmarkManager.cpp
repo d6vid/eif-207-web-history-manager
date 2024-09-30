@@ -33,13 +33,13 @@ bool BookmarkManager::serialize(std::ofstream& out) {
 	if (!out.is_open()) {
 		return false;
 	}
-	out << bookmarks.size() << "\n";
-	for (auto& bookmark : bookmarks) {
+	out << bookmarks.size() << "\n"; 
+	for (auto& bookmark : bookmarks) { 
 		if (!bookmark.serialize(out)) {
-			return false;
+			return false; 
 		}
 	}
-	return true;
+	return true; 
 }
 bool BookmarkManager::deserialize(std::ifstream& in) {
 	if (!in.is_open()) {

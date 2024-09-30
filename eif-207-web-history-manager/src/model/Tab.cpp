@@ -43,6 +43,9 @@ bool Tab::hasPages() const {
 const History& Tab::getHistory() const {
 	return history;
 }
+void Tab::applyPolicies(Policies policies) {
+	history.applyPolicy(policies);
+}
 bool Tab::serialize(std::ofstream& out) {
 	bool hasCurrentPage = currentPage.has_value();
 	out << hasCurrentPage;
@@ -69,5 +72,5 @@ bool Tab::deserialize(std::ifstream& in) {
 		return false; 
 	}
 
-	return in.good(); // Return true if all operations were successful
+	return in.good(); 
 }

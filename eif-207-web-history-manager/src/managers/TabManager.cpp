@@ -136,3 +136,9 @@ bool TabManager::deserialize(std::ifstream& in) {
 	}
 	return true;
 }
+void TabManager::applyPolicies() {
+	Policies policies = Policies(10, std::chrono::seconds(200000));
+	for (auto& tab : tabs) {
+		tab.applyPolicies(policies);
+	}
+}

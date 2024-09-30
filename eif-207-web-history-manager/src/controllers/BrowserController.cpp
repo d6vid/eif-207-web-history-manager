@@ -5,8 +5,16 @@ BrowserController::BrowserController() : browser(Browser()) {}
 void BrowserController::start() {
     importPages();
     while (true) {
-        showMenu();
-        handleMenuOption();
+        try {
+            showMenu();
+            handleMenuOption();
+            applyPolicies();
+        }
+        catch (const std::exception& e) {
+            std::cout << "\033[H\033[J";
+            std::cerr << "Excepcion: " << e.what() << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+        }
     }
 }
 
@@ -22,7 +30,7 @@ void BrowserController::showMenu() {
         "  [4]  Buscar y filtrar marcadores\n"
         "  [5]  Navegacin privada\n"
         "  [6]  Importar/Exportar\n"
-        "  [7]  Salir\n\n *** Oprima un numero o use las flechas direccionales para ingresar una opcion ( ***\n\n"
+        "  [7]  Salir\n\n *** Oprima un numero o use las flechas direccionales para ingresar una opcion ***\n\n"
         "  Las teclas de flechas izquierda y derecha le permite navegar entre otros sitios web, mientras que para navegar entre pestanas debes utilizar las flechas arriba y abajo\n\n";
 
     auto& currentTabIndex = browser.getCurrentTabIndex();
@@ -297,8 +305,6 @@ void BrowserController::importSession() {
     std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
-/*
-void BrowserController::configurePolicies() {
-    cleanConsole();
+void BrowserController::applyPolicies() {
+    browser.applyPolicies();
 }
-*/

@@ -11,6 +11,9 @@ endif()
 
 # TODO: Add tests and install targets if needed.
 
-target_link_libraries(eif-207-web-history-manager PRIVATE model managers)
+target_link_libraries(eif-207-web-history-manager PRIVATE model managers controllers)
+
+include(CTest)
 
 add_subdirectory ("src")
+add_subdirectory ("tests")

@@ -14,6 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 project ("eif-207-web-history-manager")
-
+enable_testing()
 # Include sub-projects.
 add_subdirectory ("eif-207-web-history-manager")

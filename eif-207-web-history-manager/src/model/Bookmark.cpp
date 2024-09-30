@@ -16,28 +16,48 @@ const bool Bookmark::hasTag(const std::string& tag) const {
 	return std::find(tags.begin(), tags.end(), tag) != tags.end();
 }
 bool Bookmark::serialize(std::ofstream& out) {
-	page.serialize(out);
-	size_t tagCount = tags.size();
-	out.write(reinterpret_cast<const char*>(&tagCount), sizeof(tagCount));
-	for (const auto& tag : tags) {
-		size_t length = tag.size();
-		out.write(reinterpret_cast<const char*>(&length), sizeof(length)); 
-		out.write(tag.data(), length); 
-	}
-    return out.good();
+    if (!out.is_open()) return false;
+
+    if (!page.serialize(out)) return false;
+
+    size_t numTags = tags.size();
+    out.write(reinterpret_cast<const char*>(&numTags), sizeof(numTags));
+    if (!out.good()) return false;
+
+    for (const auto& tag : tags) {
+        size_t length = tag.size();
+        out.write(reinterpret_cast<const char*>(&length), sizeof(length));
+        if (!out.good()) return false;
+
+        out.write(tag.c_str(), length);
+        if (!out.good()) return false;
+    }
+
+    return true;
 }
 bool Bookmark::deserialize(std::ifstream& in) {
-    page.deserialize(in);
-    size_t tagCount;
-    in.read(reinterpret_cast<char*>(&tagCount), sizeof(tagCount));
-	tags.resize(tagCount);
-	for (auto& tag : tags) {
+    if (!in.is_open()) return false;
+
+    if (!page.deserialize(in)) return false;
+
+    size_t numTags;
+    in.read(reinterpret_cast<char*>(&numTags), sizeof(numTags));
+    if (!in.good()) return false;
+
+    tags.clear();
+    for (size_t i = 0; i < numTags; ++i) {
         size_t length;
-        in.read(reinterpret_cast<char*>(&length), sizeof(length)); 
-        tag.resize(length);
-        in.read(&tag[0], length); 
+        in.read(reinterpret_cast<char*>(&length), sizeof(length));
+        if (!in.good()) return false;
+
+        std::string tag(length, '\0');
+        in.read(&tag[0], length);
+        if (!in.good()) return false;
+
+        tags.push_back(tag);
     }
-    return in.good();
+
+    return true;
 }
 std::string Bookmark::toString() const {
 	std::string toString = "Pagina Marcada: " + page.getUrl() + "\n"

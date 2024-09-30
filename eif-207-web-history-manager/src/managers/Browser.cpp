@@ -3,6 +3,12 @@
 Browser::Browser(const TabManager& tabManager, const BookmarkManager& bookmarkManager, const SearchManager& searchManager)
 	: tabManager(tabManager), bookmarkManager(bookmarkManager), searchManager(searchManager), isPrivate(false) {}
 Browser::~Browser() {}
+
+// X. Policies
+const void Browser::applyPolicies() {
+	tabManager.applyPolicies();
+}
+
 // 1. General Management
 const void Browser::switchPrivateSearch() {
 	isPrivate = !isPrivate;
@@ -102,8 +108,8 @@ bool Browser::deserialize(std::ifstream& in) {
 	if (!tabManager.deserialize(in)) {
 		return false;
 	}
-	if (!bookmarkManager.deserialize(in)) {
-		return false;
-	}
+	//if (!bookmarkManager.deserialize(in)) {
+	//	return false;
+	//}
 	return true; 
 }
