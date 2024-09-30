@@ -18,3 +18,14 @@ std::optional<WebPage> SearchManager::findByUrl(const std::string& url) {
 	}
 	return std::nullopt;
 }
+void SearchManager::loadFromFile(std::ifstream& in) {
+    std::string line;
+    while (std::getline(in, line)) {
+        std::istringstream ss(line);
+        std::string url, domain, title; 
+        if (std::getline(ss, url, ';') && std::getline(ss, domain, ';') && std::getline(ss, title, ';')) {
+            WebPage page = WebPage::create(url, domain, title);
+            add(page);
+        }
+    }
+}

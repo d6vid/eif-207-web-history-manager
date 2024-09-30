@@ -4,7 +4,7 @@
 #include <vector>
 #include <optional>
 
-class TabManager {
+class TabManager : public Serializable {
 public:
 	static TabManager create(const std::vector<Tab>& tabs = {}, const std::optional<size_t> currentTab = std::nullopt);
 	const bool addTab(const Tab& tab = Tab::create());
@@ -20,6 +20,8 @@ public:
 	const bool moveCurrentTabToRightPage();
 	const bool addPageToTab(const WebPage& page);
 	void switchHistoryTracking(const bool state);
+	bool serialize(std::ofstream& out);
+	bool deserialize(std::ifstream& in);
 	~TabManager();
 private:
 	TabManager(const std::vector<Tab>& tabs = {}, const std::optional<size_t> currentTab = std::nullopt);

@@ -4,7 +4,7 @@
 #include "TabManager.h"
 #include "SearchManager.h"
 
-class Browser {
+class Browser : public Serializable {
 public:
 	Browser(const TabManager& tabManager = TabManager::create(), const BookmarkManager& bookmarkManager = BookmarkManager::create(), 
 			const SearchManager& searchManager = SearchManager::create({ WebPage::create("www.una.com", "una.com", "UNA"), WebPage::create("www.facebook.com", "facebook.com", "Facebook") }));
@@ -17,7 +17,8 @@ public:
 	// 2. Search Management
 	const bool searchPage(const std::string& url);
 	const std::optional<WebPage> getPageByUrl(const std::string& url);
-	
+	const void loadPagesFromFile(std::ifstream& in);
+
 	// 3. Tab Management
 	const std::optional<Tab> getCurrentTab();
 	const std::optional<size_t> getCurrentTabIndex();
@@ -36,6 +37,10 @@ public:
 	const bool removeBookmarkByIndex(const size_t index);
 	const std::vector<Bookmark>& getBookmarks() const;
 	std::vector<Bookmark> getBookmarksByTag(const std::string& tag);
+
+	// 6. Data Persistance
+	bool serialize(std::ofstream& out);
+	bool deserialize(std::ifstream& in);
 
 private:
 	TabManager tabManager;

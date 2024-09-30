@@ -45,7 +45,7 @@ const History& Tab::getHistory() const {
 }
 bool Tab::serialize(std::ofstream& out) {
 	bool hasCurrentPage = currentPage.has_value();
-	out.write(reinterpret_cast<const char*>(&hasCurrentPage), sizeof(hasCurrentPage));
+	out << hasCurrentPage;
 	if (hasCurrentPage) {
 		currentPage->serialize(out);
 	}
@@ -54,15 +54,20 @@ bool Tab::serialize(std::ofstream& out) {
 }
 bool Tab::deserialize(std::ifstream& in) {
 	bool hasCurrentPage;
-	in.read(reinterpret_cast<char*>(&hasCurrentPage), sizeof(hasCurrentPage));
+	in >> hasCurrentPage;
 	if (hasCurrentPage) {
 		WebPage page;
-		page.deserialize(in);
+		if (!page.deserialize(in)) {
+			return false; 
+		}
 		currentPage = page;
 	}
 	else {
 		currentPage.reset();
 	}
-	history.deserialize(in);
-	return in.good();
+	if (!history.deserialize(in)) {
+		return false; 
+	}
+
+	return in.good(); // Return true if all operations were successful
 }

@@ -23,6 +23,9 @@ const bool Browser::searchPage(const std::string& url) {
 const std::optional<WebPage> Browser::getPageByUrl(const std::string& url) {
 	return searchManager.findByUrl(url);
 }
+const void Browser::loadPagesFromFile(std::ifstream& in) {
+	searchManager.loadFromFile(in);
+}
 
 // 3. Tab Management
 const std::optional<Tab> Browser::getCurrentTab() {
@@ -75,4 +78,32 @@ const std::vector<Bookmark>& Browser::getBookmarks() const {
 }
 std::vector<Bookmark> Browser::getBookmarksByTag(const std::string& tag) {
 	return bookmarkManager.getBookmarksByTag(tag);
+}
+
+// 6. Data Persistance
+bool Browser::serialize(std::ofstream& out) {
+	if (!out.is_open()) {
+		return false;
+	}
+	out << isPrivate << "\n";
+	if (!tabManager.serialize(out)) {
+		return false;
+	}
+	if (!bookmarkManager.serialize(out)) {
+		return false;
+	}
+	return true; 
+}
+bool Browser::deserialize(std::ifstream& in) {
+	if (!in.is_open()) {
+		return false;
+	}
+	in >> isPrivate;
+	if (!tabManager.deserialize(in)) {
+		return false;
+	}
+	if (!bookmarkManager.deserialize(in)) {
+		return false;
+	}
+	return true; 
 }

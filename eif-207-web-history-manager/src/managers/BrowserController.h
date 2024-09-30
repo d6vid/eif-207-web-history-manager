@@ -13,18 +13,37 @@
 
 class BrowserController {
 public:
+	void start();
 	BrowserController();
-	void showMenu();
-	void handleMenuOption();
 private:
 	Browser browser;
+	
+	// -> General Purpose
+	void showMenu();
+	void handleMenuOption();
+
+	// -> Search Management
 	void goToWebsite();
+
+	// -> Tab Management
 	void openTab();
+
+	// -> Bookmark Management
 	void addBookmark();
 	void showAndSelectBookmark();
+
+	// -> Security Management
 	void switchIncognito();
+
+	// -> Data Persistance
+	void importPages();
+	void importExportSelectMenu();
+	std::string importMenu();
+	std::string exportMenu();
+	void exportSession();
+	void importSession();
+	
 	/*
-	void importExport();
 	void configurePolicies();
 	*/
 };

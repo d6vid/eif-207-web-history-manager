@@ -1,12 +1,8 @@
 ﻿#include "WebPage.h"
 #include "BrowserController.h"
 
-int main()
-{
+int main() {
 	BrowserController app;
-	while (true) {
-		app.showMenu();
-		app.handleMenuOption();
-	}
+	app.start();
 	return 0;
 }

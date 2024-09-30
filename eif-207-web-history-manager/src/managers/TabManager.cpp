@@ -91,3 +91,48 @@ const bool TabManager::addPageToTab(const WebPage& page) {
 void TabManager::switchHistoryTracking(const bool state) {
 	isPrivate = state;
 }
+bool TabManager::serialize(std::ofstream& out) {
+	if (!out.is_open()) {
+		return false; 
+	}
+	out << isPrivate << "\n";
+	if (currentTab) {
+		out << *currentTab << "\n"; 
+	}
+	else {
+		out << "-1\n"; 
+	}
+	out << tabs.size() << "\n";
+	for (auto& tab : tabs) {
+		if (!tab.serialize(out)) {
+			return false; 
+		}
+	}
+	return true;
+}
+bool TabManager::deserialize(std::ifstream& in) {
+	if (!in.is_open()) {
+		return false; 
+	}
+	in >> isPrivate;
+	int index;
+	in >> index;
+	if (index != -1) {
+		currentTab = static_cast<size_t>(index);
+	}
+	else {
+		currentTab.reset(); 
+	}
+	size_t numTabs;
+	in >> numTabs;
+	tabs.clear(); 
+	tabs.reserve(numTabs);
+	for (size_t i = 0; i < numTabs; ++i) {
+		Tab tab = Tab::create();
+		if (!tab.deserialize(in)) {
+			return false; 
+		}
+		tabs.push_back(tab); 
+	}
+	return true;
+}

@@ -40,11 +40,12 @@ bool History::moveToRightPage() {
 bool History::isEmpty() const {
     return visitedPages.empty();
 }
-
+bool History::applyPolicies() {
+    Policy policies = Policy(2, std::chrono::seconds(259200));
+}
 const std::deque<WebPage>& History::getVisitedPages() const {
     return visitedPages;
 }
-
 bool History::serialize(std::ofstream& out) {
     size_t count = visitedPages.size();
     out.write(reinterpret_cast<char*>(&count), sizeof(count));

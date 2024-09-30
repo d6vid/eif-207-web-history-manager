@@ -2,21 +2,28 @@
 
 BrowserController::BrowserController() : browser(Browser()) {}
 
+void BrowserController::start() {
+    importPages();
+    while (true) {
+        showMenu();
+        handleMenuOption();
+    }
+}
+
 void BrowserController::showMenu() {
     std::cout << "\033[H\033[J"; 
     std::string menu =
-        "╔═══════════════════════════════════════════════════╗\n"
+        "-----------------------------------------------------\n"
         "          Historial de navegacion web \n"
-        "╚═══════════════════════════════════════════════════╝\n"
+        "-----------------------------------------------------\n"
         "  [1]  Visitar un sitio web\n"
         "  [2]  Agregar marcador\n"
-        "  [3]  Nueva pestaña\n"
+        "  [3]  Nueva pestana\n"
         "  [4]  Buscar y filtrar marcadores\n"
-        "  [5]  Navegación privada\n"
+        "  [5]  Navegacin privada\n"
         "  [6]  Importar/Exportar\n"
-        "  [7]  Configuración de políticas\n"
-        "  [8]  Salir\n\n *** Oprima un numero o use las flechas direccionales para ingresar una opcion ***\n\n"
-        "  ******************************************************************************************************************* ";
+        "  [7]  Salir\n\n *** Oprima un numero o use las flechas direccionales para ingresar una opcion ( ***\n\n"
+        "  Las teclas de flechas izquierda y derecha le permite navegar entre otros sitios web, mientras que para navegar entre pestanas debes utilizar las flechas arriba y abajo\n\n";
 
     auto& currentTabIndex = browser.getCurrentTabIndex();
     if (currentTabIndex) {
@@ -38,7 +45,7 @@ void BrowserController::showMenu() {
 
 
 void BrowserController::handleMenuOption() {
-    for (char key = '1'; key <= '5'; ++key) {
+    for (char key = '1'; key <= '7'; ++key) {
         if (GetAsyncKeyState(key) & 0x8000) {
             switch (key) {
                 case '1': {
@@ -60,6 +67,13 @@ void BrowserController::handleMenuOption() {
                 case '5': {
                     switchIncognito();
                     break;
+                }
+                case '6': {
+                    importExportSelectMenu();
+                    break;
+                }
+                case '7': {
+                    return;
                 }
             }
         }
@@ -186,20 +200,104 @@ void BrowserController::switchIncognito() {
     std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
+
+void BrowserController::importPages() {
+    std::ifstream in("../../../../eif-207-web-history-manager/files/pages.csv");
+    if (!in) {
+        std::cout << "\033[H\033[J";
+        std::cerr << "Error: No se pudo abrir el archivo de paginas web importadas." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        return;
+    }
+    browser.loadPagesFromFile(in);
+}
+
+void BrowserController::importExportSelectMenu() {
+    std::cout << "\033[H\033[J";
+    std::string option;
+    std::cout << "Seleccione la opcion que desea: \n";
+    std::cout << "1. Importar\n";
+    std::cout << "2. Exportar\n";
+    std::cout << "Digite el numero: ";
+    std::getline(std::cin, option);
+    std::cout << "\033[H\033[J";
+    switch (std::stoi(option)) {
+    case 1:
+        importSession();
+        break;
+    case 2:
+        exportSession();
+        break;
+    }
+}
+
+std::string BrowserController::importMenu() {
+    std::cout << "\033[H\033[J";
+    std::string option;
+    std::cout << "Seleccione el estado que desea restaurar: \n";
+    std::cout << "1.\n";
+    std::cout << "2.\n";
+    std::cout << "3.\n";
+    std::cout << "Digite el numero: ";
+    std::getline(std::cin, option);
+    std::cout << "\033[H\033[J";
+    return option;
+}
+
+std::string BrowserController::exportMenu() {
+    std::cout << "\033[H\033[J";
+    std::string option;
+    std::cout << "Seleccione el estado en donde desea escribir la sesion actual (Si ya hay uno en la opcion elegida, se sobreescribira): \n";
+    std::cout << "1.\n";
+    std::cout << "2.\n";
+    std::cout << "3.\n";
+    std::cout << "Digite el numero: ";
+    std::getline(std::cin, option);
+    std::cout << "\033[H\033[J";
+    return option;
+}
+
+void BrowserController::exportSession() {
+    std::string option = exportMenu();
+    std::string location = "../../../../eif-207-web-history-manager/files/states/" + option + "/browser.dat";
+    std::ofstream out(location, std::ios::binary | std::ios::out | std::ios::trunc);
+    if (!out) {
+        std::cout << "\033[H\033[J";
+        std::cerr << "Error: No se pudo abrir el archivo de sesion." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        return;
+    }
+    else {
+        if (browser.serialize(out)) {
+            std::cout << "---Se ha exportado la sesion :)))---";
+        }
+        else {
+            std::cout << "---Fallo exportando la sesion :(((---";
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+    }
+}
+
+void BrowserController::importSession() {
+    std::string option = importMenu();
+    std::string location = "../../../../eif-207-web-history-manager/files/states/" + option + "/browser.dat";
+    std::ifstream in(location, std::ios::binary | std::ios::in);
+    if (!in) {
+        std::cout << "\033[H\033[J";
+        std::cout << "---No existen datos asignados a esta sesion aun :(((---";
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        return;
+    }
+    if (browser.deserialize(in)) {
+        std::cout << "---Se ha importado la sesion :)))---";
+    }
+    else {
+        std::cout << "---Fallo importando la sesion :(((---";
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+}
+
 /*
-void BrowserController::searchHistory() {
-    cleanConsole();
-    std::string tag;
-    std::cout << "Ingrese la etiqueta para buscar en el historial: ";
-    std::cin >> tag;
-    auto& bookmarks = browser.getBookmarksByTag(tag);
-    std::cout << "Marcadores encontrados: " << bookmarks << std::endl;
-}
-
-void BrowserController::importExport() {
-    cleanConsole();
-}
-
 void BrowserController::configurePolicies() {
     cleanConsole();
 }

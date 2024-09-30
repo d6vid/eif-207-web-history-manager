@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include "WebPage.h"
 #include "Serializable.h"
+#include "Policy.h"
 
 class History : public Serializable {
 public:
@@ -15,6 +16,7 @@ public:
 	bool moveToLeftPage();
 	bool moveToRightPage();
 	bool isEmpty() const;
+	bool applyPolicies();
 	bool serialize(std::ofstream& out);
 	bool deserialize(std::ifstream& in);
 	~History();
